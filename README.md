@@ -1,13 +1,22 @@
-# Anamnesis
+<p align="center">
+  <img src="frontend/logo.svg" width="120" alt="Anamnesis Logo">
+</p>
 
-**Anamnesis** (Greek: *ἀνάμνησις*, "recollection") — a spaced-repetition study tool that parses LaTeX lecture notes into an interactive knowledge graph with adaptive review scheduling.
+<h1 align="center">Anamnesis</h1>
 
-Built for exam revision of theorem-heavy university courses. Upload your `.tex` notes, and Anamnesis extracts every definition, theorem, lemma, proof, and example into a browsable, quizzable, reviewable knowledge base.
+<p align="center">
+  <strong>A spaced-repetition study tool that parses LaTeX lecture notes into an interactive knowledge graph with adaptive review scheduling.</strong>
+</p>
+
+<p align="center">
+  <em>Anamnesis</em> (Greek: <em>ἀνάμνησις</em>, "recollection") is built for exam revision of theorem-heavy university courses. Drop your <code>.tex</code> files into the browser and Anamnesis extracts every definition, theorem, lemma, proof, and example into a browsable, quizzable, reviewable knowledge base — no command-line steps required.
+</p>
 
 ## Features
 
-- **LaTeX Parsing** — Extracts theorem-like environments (`\begin{theorem}`, `\begin{definition}`, etc.) from `.tex` files, resolves `\ref`/`\eqref` cross-references, and renders math via KaTeX
-- **Knowledge Graph** — Automatically infers concept dependencies (which theorems depend on which definitions) and visualizes them as an interactive D3.js force graph
+- **Drag-and-Drop Onboarding** — Drop `.tex` files into the browser to create a course; parsing, graph building, and dependency inference all happen automatically
+- **LaTeX Parsing** — Extracts theorem-like environments (`\begin{theorem}`, `\begin{definition}`, etc.), resolves `\ref`/`\eqref` cross-references, and renders math via KaTeX
+- **Knowledge Graph** — Infers concept dependencies (which theorems depend on which definitions) and visualizes them as an interactive D3.js force graph
 - **Spaced Repetition** — FSRS-inspired scheduling tracks per-concept difficulty and stability, prioritizing review of items closest to being forgotten
 - **Diagnostic Assessment** — Quick self-rating of the most important concepts to identify knowledge gaps
 - **Guided Learning Paths** — Topologically-sorted study plans: learn prerequisites before target theorems
@@ -30,35 +39,15 @@ cd Anamnesis
 pip install -r requirements.txt
 ```
 
-### First Run
+### Run
 
-1. **Prepare your notes**: Place your `.tex` files in the `input/` directory (create it if needed).
+```bash
+python server/app.py
+```
 
-2. **Parse the notes**:
-   ```bash
-   python scripts/parse_all.py
-   python scripts/build_graph.py
-   ```
+Open `http://localhost:5000` in your browser. On first launch you will see the welcome screen — drag and drop your `.tex` files (or use the file/folder picker) to create your first course. Anamnesis handles all parsing, dependency analysis, and graph construction automatically.
 
-3. **Run the migration** (creates the course structure):
-   ```bash
-   python scripts/migrate_to_courses.py
-   ```
-
-4. **Start the server**:
-   ```bash
-   python server/app.py
-   ```
-
-5. Open `http://localhost:5000` in your browser.
-
-### Adding Courses via the UI
-
-After the first run, you can add new courses directly through the browser:
-
-1. Click **Courses** in the nav bar
-2. Enter a course name and upload `.tex` files (drag & drop or file/folder picker)
-3. Anamnesis will parse and build the knowledge graph automatically
+> **Existing data?** If you have legacy data from an earlier version (files in `input/` or `data/`), Anamnesis auto-migrates them into the course structure on startup — no manual migration needed.
 
 ## Architecture
 
@@ -80,17 +69,16 @@ Anamnesis/
 │   ├── graph_merger.py       # Edge deduplication & graph building
 │   └── prompt_templates.py
 │
-├── scripts/                  # CLI pipeline
+├── scripts/                  # CLI utilities (optional, not required)
 │   ├── parse_all.py          # .tex → parsed_nodes.json
 │   ├── build_graph.py        # nodes → knowledge_graph.json
 │   ├── infer_deps.py         # Claude API → inferred_edges.json
-│   ├── migrate_to_courses.py # One-time data migration
 │   └── name_nodes.py         # Auto-naming via Claude API
 │
 ├── server/                   # Flask backend
-│   ├── app.py                # Entry point + static serving
+│   ├── app.py                # Entry point + auto-migration + static serving
 │   ├── state.py              # Course-aware global state
-│   ├── course_manager.py     # Course CRUD + pipeline runner
+│   ├── course_manager.py     # Course CRUD + pipeline orchestration
 │   └── routes/
 │       ├── graph_api.py      # GET /api/graph, /api/node/:id
 │       ├── progress_api.py   # Progress tracking + reset
@@ -103,12 +91,14 @@ Anamnesis/
 │
 └── frontend/                 # Vanilla JS SPA
     ├── index.html
+    ├── logo.svg              # Project logo / favicon
     ├── css/main.css          # GitHub dark theme
     └── js/
         ├── api.js            # API client + Session manager
-        ├── app.js            # SPA router
+        ├── app.js            # SPA router + onboarding logic
         ├── katex_setup.js    # Math rendering config
         └── components/
+            ├── welcome.js    # First-run onboarding with drag-and-drop
             ├── dashboard.js  # Exam readiness overview
             ├── diagnostic.js # Quick knowledge assessment
             ├── learning.js   # Study plans + focus paths
