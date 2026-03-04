@@ -24,7 +24,18 @@ body {
     font-weight: 700;
     color: #58a6ff;
     margin-right: 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
 }
+.nav-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+}
+.nav-minimal .nav-links { display: none; }
+.nav-minimal .course-selector { display: none !important; }
 .nav-links { display: flex; gap: 4px; }
 .nav-link {
     color: #8b949e;
@@ -154,6 +165,7 @@ body {
 .btn-blue { background: #1f6feb; border-color: #1f6feb; color: #fff; }
 .btn-blue:hover { background: #388bfd; }
 .btn-sm { padding: 4px 12px; font-size: 12px; }
+.btn-lg { padding: 12px 28px; font-size: 16px; font-weight: 600; }
 .btn-group { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
 
 /* === Dashboard === */
@@ -724,6 +736,145 @@ body {
     gap: 8px;
 }
 
+/* === Welcome / Onboarding Page === */
+.welcome-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+.welcome-hero {
+    text-align: center;
+    margin-bottom: 32px;
+}
+.welcome-logo {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 16px;
+    border-radius: 20px;
+}
+.welcome-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #e1e4e8;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+.welcome-subtitle {
+    font-size: 16px;
+    color: #8b949e;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+.welcome-main {
+    padding: 28px;
+}
+.welcome-main h2 {
+    margin-bottom: 8px;
+}
+.welcome-drop-zone {
+    border: 2px dashed #30363d;
+    border-radius: 12px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-bottom: 16px;
+    background: rgba(13, 17, 23, 0.5);
+}
+.welcome-drop-zone:hover,
+.welcome-drop-zone.drop-zone-active {
+    border-color: #58a6ff;
+    background: rgba(88, 166, 255, 0.06);
+    box-shadow: 0 0 24px rgba(88, 166, 255, 0.08);
+}
+.welcome-drop-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 12px;
+    opacity: 0.7;
+}
+.welcome-drop-content h3 {
+    font-size: 18px;
+    margin-bottom: 4px;
+    color: #e1e4e8;
+}
+
+/* Welcome progress indicator */
+.welcome-progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 32px 0;
+}
+.welcome-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #21262d;
+    border-top-color: #58a6ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+.welcome-progress-text {
+    font-size: 15px;
+    color: #8b949e;
+    font-weight: 500;
+}
+.welcome-progress-bar {
+    width: 100%;
+    max-width: 320px;
+    height: 4px;
+    background: #21262d;
+    border-radius: 2px;
+    overflow: hidden;
+}
+.welcome-progress-fill {
+    height: 100%;
+    background: #58a6ff;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
+}
+
+/* Feature cards */
+.welcome-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+}
+.feature-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+.feature-icon {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto 10px;
+}
+.feature-icon svg {
+    width: 100%;
+    height: 100%;
+}
+.feature-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #e1e4e8;
+}
+.feature-card p {
+    font-size: 12px;
+    color: #8b949e;
+    line-height: 1.5;
+}
+
 /* === Responsive === */
 @media (max-width: 768px) {
     #nav { padding: 0 12px; flex-wrap: wrap; height: auto; }
@@ -732,4 +883,6 @@ body {
     .course-selector select { max-width: 100%; width: 100%; }
     #app { padding: 12px; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .welcome-features { grid-template-columns: 1fr; }
+    .welcome-title { font-size: 28px; }
 }

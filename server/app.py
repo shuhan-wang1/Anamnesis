@@ -7,8 +7,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
-from config import FRONTEND_DIR, DATA_DIR
+from config import FRONTEND_DIR, DATA_DIR, INPUT_DIR
 import server.state as state
+from server.course_manager import auto_migrate_legacy
 
 app = Flask(__name__, static_folder=None)
 CORS(app)
@@ -19,6 +20,11 @@ CORS(app)
 @app.route('/')
 def index():
     return send_from_directory(FRONTEND_DIR, 'index.html')
+
+
+@app.route('/favicon.svg')
+def favicon():
+    return send_from_directory(FRONTEND_DIR, 'logo.svg')
 
 
 @app.route('/<path:path>')
@@ -48,6 +54,8 @@ app.register_blueprint(course_bp, url_prefix='/api')
 
 
 def main():
+    # Auto-migrate legacy data if needed (before state init)
+    auto_migrate_legacy(DATA_DIR, INPUT_DIR)
     state.init(DATA_DIR)
     print("Starting Anamnesis at http://localhost:5000")
     app.run(host='127.0.0.1', port=5000, debug=False)

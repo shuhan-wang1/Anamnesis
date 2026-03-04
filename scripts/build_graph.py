@@ -165,8 +165,8 @@ def run_build(data_dir: str, file_order: list[str] | None = None):
 
 
 def main():
-    from config import DATA_DIR, FILE_ORDER
-    run_build(DATA_DIR, FILE_ORDER)
+    from config import DATA_DIR
+    run_build(DATA_DIR)
 
 
 if __name__ == '__main__':

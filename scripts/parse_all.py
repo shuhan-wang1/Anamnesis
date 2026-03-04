@@ -105,8 +105,8 @@ def run_parse(input_dir: str, data_dir: str, file_order: list[str] | None = None
 
 
 def main():
-    from config import INPUT_DIR, DATA_DIR, FILE_ORDER
-    run_parse(INPUT_DIR, DATA_DIR, FILE_ORDER)
+    from config import INPUT_DIR, DATA_DIR
+    run_parse(INPUT_DIR, DATA_DIR)
 
 
 if __name__ == '__main__':

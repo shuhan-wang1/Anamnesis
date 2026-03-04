@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#151b25"/>
+      <stop offset="100%" stop-color="#0d1117"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#79b8ff"/>
+      <stop offset="100%" stop-color="#388bfd"/>
+    </linearGradient>
+    <linearGradient id="apexGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a5d6ff"/>
+      <stop offset="100%" stop-color="#58a6ff"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#58a6ff" flood-opacity="0.3" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="102" fill="url(#bgGrad)"/>
+  <rect x="3" y="3" width="506" height="506" rx="99" fill="none" stroke="#21262d" stroke-width="2"/>
+
+  <!-- Graph edges (connections between nodes forming the "A") -->
+  <g stroke="#58a6ff" stroke-width="4" stroke-linecap="round" opacity="0.3">
+    <!-- Left side of A -->
+    <line x1="148" y1="400" x2="188" y2="290"/>
+    <line x1="188" y1="290" x2="222" y2="195"/>
+    <line x1="222" y1="195" x2="256" y2="100"/>
+    <!-- Right side of A -->
+    <line x1="364" y1="400" x2="324" y2="290"/>
+    <line x1="324" y1="290" x2="290" y2="195"/>
+    <line x1="290" y1="195" x2="256" y2="100"/>
+    <!-- Crossbar -->
+    <line x1="188" y1="290" x2="324" y2="290"/>
+    <!-- Upper crossbar -->
+    <line x1="222" y1="195" x2="290" y2="195"/>
+    <!-- Cross connections (knowledge graph style) -->
+    <line x1="188" y1="290" x2="290" y2="195"/>
+    <line x1="324" y1="290" x2="222" y2="195"/>
+    <!-- Inner triangle -->
+    <line x1="222" y1="195" x2="256" y2="290"/>
+    <line x1="290" y1="195" x2="256" y2="290"/>
+  </g>
+
+  <!-- Secondary edge glow -->
+  <g stroke="#58a6ff" stroke-width="2" stroke-linecap="round" opacity="0.12">
+    <line x1="148" y1="400" x2="324" y2="290"/>
+    <line x1="364" y1="400" x2="188" y2="290"/>
+    <line x1="148" y1="400" x2="364" y2="400"/>
+  </g>
+
+  <!-- Graph nodes — base pair -->
+  <circle cx="148" cy="400" r="18" fill="url(#nodeGrad)" filter="url(#softGlow)"/>
+  <circle cx="364" cy="400" r="18" fill="url(#nodeGrad)" filter="url(#softGlow)"/>
+
+  <!-- Graph nodes — crossbar pair -->
+  <circle cx="188" cy="290" r="15" fill="url(#nodeGrad)" filter="url(#softGlow)"/>
+  <circle cx="324" cy="290" r="15" fill="url(#nodeGrad)" filter="url(#softGlow)"/>
+
+  <!-- Graph nodes — crossbar center -->
+  <circle cx="256" cy="290" r="10" fill="#58a6ff" opacity="0.6"/>
+
+  <!-- Graph nodes — upper pair -->
+  <circle cx="222" cy="195" r="13" fill="url(#nodeGrad)" filter="url(#softGlow)"/>
+  <circle cx="290" cy="195" r="13" fill="url(#nodeGrad)" filter="url(#softGlow)"/>
+
+  <!-- Apex node — the recalled concept (largest, brightest) -->
+  <circle cx="256" cy="100" r="32" fill="#58a6ff" opacity="0.08"/>
+  <circle cx="256" cy="100" r="22" fill="url(#apexGrad)" filter="url(#glow)"/>
+  <!-- Inner highlight on apex -->
+  <circle cx="252" cy="95" r="6" fill="#fff" opacity="0.25"/>
+</svg>

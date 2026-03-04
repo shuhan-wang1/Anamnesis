@@ -8,15 +8,32 @@ const PAGES = {
     graph: renderGraphViewer,
     browse: renderBrowse,
     courses: renderCourses,
+    welcome: renderWelcome,
 };
 
 let currentPage = 'dashboard';
+let _hasCourses = false;
 
 function navigateTo(page) {
-    currentPage = page;
-    Session.set('currentPage', page);
+    // If no courses exist, always show welcome (unless navigating to courses page)
+    if (!_hasCourses && page !== 'welcome' && page !== 'courses') {
+        page = 'welcome';
+    }
 
-    // Update nav
+    currentPage = page;
+    if (page !== 'welcome') {
+        Session.set('currentPage', page);
+    }
+
+    // Update nav visibility based on whether we have courses
+    const nav = document.getElementById('nav');
+    if (page === 'welcome') {
+        nav.classList.add('nav-minimal');
+    } else {
+        nav.classList.remove('nav-minimal');
+    }
+
+    // Update nav active state
     document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.toggle('active', link.dataset.page === page);
     });
@@ -40,6 +57,8 @@ async function initCourseSelector() {
 
     try {
         const data = await API.getCourses();
+        _hasCourses = data.courses.length > 0;
+
         select.innerHTML = '';
         for (const course of data.courses) {
             const opt = document.createElement('option');
@@ -51,9 +70,9 @@ async function initCourseSelector() {
             select.appendChild(opt);
         }
 
-        // Hide selector if no courses
+        // Hide selector and nav links if no courses
         const selectorDiv = document.getElementById('courseSelector');
-        if (data.courses.length === 0) {
+        if (!_hasCourses) {
             selectorDiv.style.display = 'none';
         } else {
             selectorDiv.style.display = '';
@@ -77,6 +96,7 @@ async function initCourseSelector() {
         });
     } catch {
         // Courses not available yet
+        _hasCourses = false;
         document.getElementById('courseSelector').style.display = 'none';
     }
 }
@@ -100,9 +120,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Restore last page or default to dashboard
-    const savedPage = Session.get('currentPage', 'dashboard');
-    navigateTo(PAGES[savedPage] ? savedPage : 'dashboard');
+    // Show welcome if no courses, otherwise restore last page
+    if (!_hasCourses) {
+        navigateTo('welcome');
+    } else {
+        const savedPage = Session.get('currentPage', 'dashboard');
+        navigateTo(PAGES[savedPage] ? savedPage : 'dashboard');
+    }
 });
 
 // Save session on page unload

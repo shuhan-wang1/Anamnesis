@@ -16,6 +16,85 @@ def init(data_dir: str):
     os.makedirs(os.path.join(DATA_DIR, 'courses'), exist_ok=True)
 
 
+def auto_migrate_legacy(data_dir: str, input_dir: str):
+    """Auto-migrate legacy single-course data into courses/ structure on startup.
+
+    Checks if courses.json exists. If not, looks for legacy data files
+    (knowledge_graph.json, parsed_nodes.json, etc.) in data_dir root and
+    .tex files in input_dir. If found, migrates them to a default course.
+    """
+    courses_file = os.path.join(data_dir, 'courses.json')
+    if os.path.exists(courses_file):
+        return  # Already migrated
+
+    # Check if there's any legacy data to migrate
+    legacy_files = [
+        'knowledge_graph.json', 'parsed_nodes.json', 'explicit_edges.json',
+        'inferred_edges.json', 'macro_registry.json', 'name_cache.json',
+        'user_progress.json', 'session.json',
+    ]
+    has_legacy_data = any(
+        os.path.exists(os.path.join(data_dir, f)) for f in legacy_files
+    )
+    has_tex_files = (
+        os.path.exists(input_dir) and
+        any(f.endswith('.tex') for f in os.listdir(input_dir))
+    )
+
+    if not has_legacy_data and not has_tex_files:
+        return  # Nothing to migrate
+
+    print("Auto-migrating legacy data to course structure...")
+
+    courses_dir = os.path.join(data_dir, 'courses')
+    default_dir = os.path.join(courses_dir, 'default')
+    default_input = os.path.join(default_dir, 'input')
+    os.makedirs(default_input, exist_ok=True)
+
+    # Copy data files
+    copied = 0
+    for fname in legacy_files:
+        src = os.path.join(data_dir, fname)
+        dst = os.path.join(default_dir, fname)
+        if os.path.exists(src):
+            shutil.copy2(src, dst)
+            copied += 1
+            print(f"  Migrated {fname}")
+
+    # Copy input .tex files
+    tex_files = []
+    if os.path.exists(input_dir):
+        for fname in os.listdir(input_dir):
+            if fname.endswith('.tex'):
+                src = os.path.join(input_dir, fname)
+                dst = os.path.join(default_input, fname)
+                shutil.copy2(src, dst)
+                tex_files.append(fname)
+
+    # Count nodes from knowledge graph
+    node_count = 0
+    kg_path = os.path.join(default_dir, 'knowledge_graph.json')
+    if os.path.exists(kg_path):
+        with open(kg_path, 'r', encoding='utf-8') as f:
+            graph = json.load(f)
+            node_count = graph.get('metadata', {}).get('total_nodes', 0)
+
+    # Create courses.json
+    courses = [{
+        'id': 'default',
+        'name': 'Imported Course',
+        'created_at': datetime.now().isoformat(),
+        'file_count': len(tex_files),
+        'node_count': node_count,
+        'files': tex_files,
+    }]
+
+    with open(courses_file, 'w', encoding='utf-8') as f:
+        json.dump(courses, f, indent=2, ensure_ascii=False)
+
+    print(f"  Migration complete: {copied} data files, {len(tex_files)} .tex files, {node_count} nodes")
+
+
 def _courses_file():
     return os.path.join(DATA_DIR, 'courses.json')
 

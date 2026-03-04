@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anamnesis</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <!-- KaTeX -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
@@ -14,7 +15,10 @@
 </head>
 <body>
     <nav id="nav">
-        <div class="nav-brand">Anamnesis</div>
+        <div class="nav-brand">
+            <img src="logo.svg" alt="" class="nav-logo">
+            Anamnesis
+        </div>
         <div class="course-selector" id="courseSelector">
             <select id="courseSelect" title="Switch course"></select>
         </div>
@@ -40,6 +44,7 @@
     <script src="js/components/graph_viewer.js"></script>
     <script src="js/components/browse.js"></script>
     <script src="js/components/courses.js"></script>
+    <script src="js/components/welcome.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

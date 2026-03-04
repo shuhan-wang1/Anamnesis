@@ -16,16 +16,3 @@ NAME_CACHE_PATH = os.path.join(DATA_DIR, "name_cache.json")
 
 # Claude API model for dependency inference
 INFERENCE_MODEL = "claude-sonnet-4-20250514"
-
-# File ordering for the original course (used by CLI scripts)
-FILE_ORDER = [
-    "slide_1_note (2).tex",
-    "slide_1_note (3).tex",
-    "slide_2_note (1).tex",
-    "slide_2_note_continue (1).tex",
-    "slide_3_note (1).tex",
-    "slide_4_note (1).tex",
-    "slide_5 (2).tex",
-    "slide_6_note (1).tex",
-    "slide_7 (1).tex",
-]
