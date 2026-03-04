@@ -3,9 +3,10 @@
 async function renderDashboard(container) {
     container.innerHTML = '<div class="text-muted">Loading dashboard...</div>';
 
-    const [data, srData] = await Promise.all([
+    const [data, srData, rlData] = await Promise.all([
         API.getDashboard(),
         API.getSRSummary(),
+        API.getRLStats(),
     ]);
 
     const readiness = data.readiness_percent;
@@ -116,6 +117,32 @@ async function renderDashboard(container) {
                 </div>
             `;
         }
+    }
+
+    // RL Learning stats
+    if (rlData && rlData.total_interactions > 0) {
+        const rlPct = Math.round(rlData.current_rl_weight * 100);
+        html += `
+            <div class="card mb-4" style="border-left:3px solid #a371f7">
+                <h3>Adaptive Learning (RL)</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:#a371f7">${rlPct}%</div>
+                        <div class="stat-label">RL Influence</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${rlData.total_interactions}</div>
+                        <div class="stat-label">Total Reviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${rlData.nodes_with_rl_state}</div>
+                        <div class="stat-label">Nodes Tracked</div>
+                    </div>
+                </div>
+                <p class="text-muted text-sm mt-2">The system learns your knowledge gaps from each review.
+                As you review more, it gets better at selecting questions you're likely to find challenging.</p>
+            </div>
+        `;
     }
 
     // Critical gaps

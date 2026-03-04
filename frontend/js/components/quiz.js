@@ -160,12 +160,16 @@ async function _startSmartReview(count) {
 
         const typeName = (node.type || '').charAt(0).toUpperCase() + (node.type || '').slice(1);
         const retPct = Math.round((due.retrievability || 0) * 100);
+        const failPct = due.rl_alpha != null
+            ? Math.round(due.rl_alpha / (due.rl_alpha + due.rl_beta) * 100) : null;
+        let subtitle = `Estimated recall: ${retPct}% | Difficulty: ${Math.round((due.difficulty || 0.3) * 100)}%`;
+        if (failPct !== null) subtitle += ` | Predicted failure: ${failPct}%`;
 
         quizItems.push({
             node_id: node.id,
             quiz_type: 'smart_review',
             prompt: `Review: ${typeName} ${node.display_number || ''}${node.title ? ': ' + node.title : ''}`,
-            prompt_subtitle: `Estimated recall: ${retPct}% | Difficulty: ${Math.round((due.difficulty || 0.3) * 100)}%`,
+            prompt_subtitle: subtitle,
             prompt_content: node.katex_content || '',
             answer: node.katex_content || node.latex_content || '',
             is_smart_review: true,

@@ -3,6 +3,7 @@
 from collections import defaultdict, deque
 from flask import Blueprint, jsonify, request
 import server.state as state
+from server.routes.spaced_repetition import initialize_rl_from_status
 
 diagnostic_bp = Blueprint('diagnostic', __name__)
 
@@ -63,6 +64,7 @@ def rate_nodes():
             'status': rating, 'review_count': 0, 'quiz_history': []
         })
         progress['nodes'][node_id]['status'] = rating
+        progress['nodes'][node_id].setdefault('rl', initialize_rl_from_status(rating))
 
         if rating == 'known':
             # Propagate known downward (optimistic)
@@ -71,7 +73,8 @@ def rate_nodes():
                 dep = queue.popleft()
                 if dep not in explicitly_rated and dep not in progress['nodes']:
                     progress['nodes'][dep] = {
-                        'status': 'known', 'review_count': 0, 'quiz_history': []
+                        'status': 'known', 'review_count': 0, 'quiz_history': [],
+                        'rl': initialize_rl_from_status('known'),
                     }
                     queue.extend(depends_on.get(dep, []))
 
@@ -88,9 +91,10 @@ def rate_nodes():
                     existing = progress['nodes'].get(dep, {}).get('status')
                     if existing != 'known':
                         progress['nodes'].setdefault(dep, {
-                            'status': 'unknown', 'review_count': 0, 'quiz_history': []
+                            'status': 'unknown', 'review_count': 0, 'quiz_history': [],
                         })
                         progress['nodes'][dep]['status'] = 'unknown'
+                        progress['nodes'][dep].setdefault('rl', initialize_rl_from_status('unknown'))
                         queue.extend(depends_on.get(dep, []))
 
     state.save_progress()

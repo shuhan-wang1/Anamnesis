@@ -3,7 +3,10 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request
 import server.state as state
-from server.routes.spaced_repetition import update_sr_state, DEFAULT_SR, DEFAULT_SETTINGS
+from server.routes.spaced_repetition import (
+    update_sr_state, DEFAULT_SR, DEFAULT_SETTINGS,
+    update_rl_state, initialize_rl_from_status, DEFAULT_RL,
+)
 
 progress_bp = Blueprint('progress', __name__)
 
@@ -59,6 +62,13 @@ def update_progress(node_id):
     sr = state.progress['nodes'][node_id].get('sr', dict(DEFAULT_SR))
     state.progress['nodes'][node_id]['sr'] = update_sr_state(sr, status, settings)
 
+    # Update RL state
+    rl = state.progress['nodes'][node_id].get('rl')
+    if rl:
+        state.progress['nodes'][node_id]['rl'] = update_rl_state(rl, status)
+    else:
+        state.progress['nodes'][node_id]['rl'] = initialize_rl_from_status(status)
+
     state.save_progress()
     return jsonify({'ok': True, 'node_id': node_id, 'status': status})
 
@@ -67,9 +77,12 @@ def update_progress(node_id):
 def reset_progress():
     """Reset all progress."""
     sr_settings = state.progress.get('sr_settings')
+    rl_settings = state.progress.get('rl_settings')
     state.progress = {'nodes': {}, 'quiz_sessions': [], 'study_time': {}}
     if sr_settings:
         state.progress['sr_settings'] = sr_settings
+    if rl_settings:
+        state.progress['rl_settings'] = rl_settings
     state.save_progress()
     state.session = {}
     state.save_session()

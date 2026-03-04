@@ -48,6 +48,7 @@ const API = {
     getSRDue: (limit = 20) => API.get(`/api/sr/due?limit=${limit}`),
     getSRSummary: () => API.get('/api/sr/summary'),
     recordSRReview: (nodeId, rating) => API.post('/api/sr/review', { node_id: nodeId, rating }),
+    getRLStats: () => API.get('/api/sr/rl-stats'),
 
     // Session persistence
     getSession: () => API.get('/api/session'),
