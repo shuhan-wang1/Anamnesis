@@ -6,6 +6,11 @@ __pycache__/
 dist/
 build/
 *.egg
+*.spec.bak
+
+# PyInstaller
+*.manifest
+*.spec.tmp
 
 # Data (generated, per-user)
 data/

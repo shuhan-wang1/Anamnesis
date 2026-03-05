@@ -1,0 +1,5 @@
+# Desktop app dependencies (includes base requirements)
+-r requirements.txt
+pywebview>=5.0
+platformdirs>=4.0
+pyinstaller>=6.0

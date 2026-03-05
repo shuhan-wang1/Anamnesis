@@ -53,10 +53,15 @@ app.register_blueprint(sr_bp, url_prefix='/api')
 app.register_blueprint(course_bp, url_prefix='/api')
 
 
-def main():
-    # Auto-migrate legacy data if needed (before state init)
+def startup():
+    """Initialize data layer. Called before serving requests."""
     auto_migrate_legacy(DATA_DIR, INPUT_DIR)
     state.init(DATA_DIR)
+
+
+def main():
+    """CLI entry point for development."""
+    startup()
     print("Starting Anamnesis at http://localhost:5000")
     app.run(host='127.0.0.1', port=5000, debug=False)
 
